@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<<!DOCTYPE html>
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
@@ -26,58 +26,62 @@
         /* リンクの見た目を整える */
         nav ul li a { color: #333; text-decoration: none; font-weight: bold; cursor: pointer; }
         nav ul li a:hover { color: #4a90e2; }
-    </style>
-</head>
-<body>
+    <section class="card" style="background-color: #fff0f5;">
+        <h2>事務効率化：見積もり計算ツール</h2>
+        <div style="margin-bottom: 10px;">
+            <label>単価：</label>
+            <input type="number" id="unitPrice" placeholder="例: 1000" style="padding: 8px; width: 100px;">
+        </div>
+        <div style="margin-bottom: 10px;">
+            <label>数量：</label>
+            <input type="number" id="quantity" placeholder="例: 5" style="padding: 8px; width: 100px;">
+        </div>
+        <button class="btn" onclick="calculateTotal()">合計を計算する</button>
+        <p id="calcResult" style="font-weight: bold; font-size: 1.1rem; color: #e67e22; margin-top: 10px;"></p>
+    </section>
 
-<header>
-    <h1>(masumi) & Business Innovation</h1>
-    <p>事務職からAIエンジニアへの挑戦。新しい価値を、ここから。</p>
-</header>
-
-<nav>
-    <ul>
-        <li>ホーム</li>
-        <li><a href="https://www.google.com">事業内容</a></li>
-        <li>実績</li>
-        <li><a onclick="alert('お電話でのお問い合わせはこちら：0000000000')">お問い合わせ</a></li>
-    </ul>
-</nav>
-<section class="card" style="background-color: #fff0f5;">
-        <h2>事務効率化：簡易見積もり計算機</h2>
-        <p>金額を入力してください（10%の税込価格を計算します）</p>
-        <input type="number" id="priceInput" placeholder="金額を入力" style="padding: 10px; width: 100px;">
-        <button class="btn" onclick="calculateTax()">計算する</button>
-        <p id="result" style="font-weight: bold; font-size: 1.2rem; color: #e67e22;"></p>
+    <section class="card" style="background-color: #f0f8ff;">
+        <h2>事務効率化：メール定型文作成</h2>
+        <div style="margin-bottom: 10px;">
+            <label>お客様名：</label>
+            <input type="text" id="clientName" placeholder="〇〇株式会社 様" style="padding: 8px; width: 200px;">
+        </div>
+        <button class="btn" style="background: #4a90e2;" onclick="generateMail()">メール文を作成する</button>
+        
+        <div style="margin-top: 15px;">
+            <textarea id="mailBody" rows="8" style="width: 100%; padding: 10px; border-radius: 5px; border: 1px solid #ddd;" readonly></textarea>
+        </div>
+        <button class="btn" style="background: #27ae60;" onclick="copyMail()">文面をコピーする</button>
     </section>
 
     <script>
-        function calculateTax() {
-            const price = document.getElementById('priceInput').value;
-            if (price) {
-                const taxIncluded = Math.floor(price * 1.1);
-                document.getElementById('result').innerText = '税込金額は ' + taxIncluded.toLocaleString() + ' 円です！';
+        // 計算の魔法
+        function calculateTotal() {
+            const price = document.getElementById('unitPrice').value;
+            const qty = document.getElementById('quantity').value;
+            if (price && qty) {
+                const total = Math.floor(price * qty * 1.1); // 10%税込
+                document.getElementById('calcResult').innerText = '合計金額（税込）は ' + total.toLocaleString() + ' 円です。';
             } else {
-                alert('金額を入力してくださいね');
+                alert('単価と数量を入力してください');
             }
         }
+
+        // 定型文作成の魔法
+        function generateMail() {
+            const name = document.getElementById('clientName').value || 'お客様';
+            const totalText = document.getElementById('calcResult').innerText || '（未計算）';
+            
+            const body = `${name}\n\nお世話になっております、(masumi)です。\n\n先ほどのご依頼内容について、お見積り金額をご案内いたします。\n\n${totalText}\n\nご確認のほど、よろしくお願い申し上げます。`;
+            
+            document.getElementById('mailBody').value = body;
+        }
+
+        // コピーの魔法
+        function copyMail() {
+            const textarea = document.getElementById('mailBody');
+            textarea.select();
+            document.execCommand('copy');
+            alert('メール文をクリップボードにコピーしました！');
+        }
     </script>
-<div class="container">
-    <section class="card">
-        <h2>私たちができること</h2>
-        <p>AIを活用した業務効率化や、最新技術を用いたウェブソリューションを提供します。昨日の自分を超え、未来を形にするお手伝いをします。</p>
-    </section>
-
-    <section class="card">
-        <h2>現在のプロジェクト</h2>
-        <p>GitHub Pagesを活用したウェブサイトの構築。SEO対策を意識した、シンプルかつ強力な発信基地を作っています。</p>
-        <a href="#" class="btn" onclick="alert('おめでとうございます！ボタンも新しくなりました！')">詳細を見る</a>
-    </section>
-</div>
-
-<footer>
-    &copy; 2026 (masumi) Lab. All Rights Reserved.
-</footer>
-
-</body>
-</html>
