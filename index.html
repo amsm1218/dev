@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>(masumi) のポートフォリオ</title>
+    <meta name="description" content="事務職の経験を活かし、AIで業務効率化を目指す(masumi)のポートフォリオサイトです。">
+    <style>
+        body { font-family: 'Helvetica Neue', Arial, sans-serif; line-height: 1.6; margin: 0; color: #333; }
+        header { background: #4a90e2; color: #fff; padding: 2rem; text-align: center; }
+        nav { background: #ecf0f1; padding: 0.5rem; text-align: center; position: sticky; top: 0; }
+        .container { max-width: 800px; margin: auto; padding: 2rem; }
+        .card { border: 1px solid #ddd; padding: 1.5rem; border-radius: 8px; margin-bottom: 1rem; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        h1 { margin: 0; font-size: 2.5rem; }
+        .btn { background: #e67e22; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block; margin-top: 10px; border: none; cursor: pointer; }
+        footer { text-align: center; padding: 2rem; background: #f9f9f9; font-size: 0.8rem; }
+        ul { list-style: none; padding: 0; display: flex; justify-content: center; gap: 20px; }
+        nav ul li a { color: #333; text-decoration: none; font-weight: bold; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>(masumi) & Business Innovation</h1>
+    <p>事務職からAIエンジニアへの挑戦。新しい価値を、ここから。</p>
+</header>
+
+<nav>
+    <ul>
+        <li>ホーム</li>
+        <li><a href="https://www.google.com">事業内容</a></li>
+        <li>実績</li>
+        <li><a onclick="alert('お電話でのお問い合わせはこちら：0000000000')">お問い合わせ</a></li>
+    </ul>
+</nav>
+
+<div class="container">
+    <section class="card" style="background-color: #fff0f5;">
+        <h2>事務効率化：見積もり計算ツール</h2>
+        <div style="margin-bottom: 10px;">
+            <label>単価：</label>
+            <input type="number" id="unitPrice" placeholder="例: 1000" style="padding: 8px; width: 100px;">
+        </div>
+        <div style="margin-bottom: 10px;">
+            <label>数量：</label>
+            <input type="number" id="quantity" placeholder="例: 5" style="padding: 8px; width: 100px;">
+        </div>
+        <button class="btn" onclick="calculateTotal()">合計を計算する</button>
+        <p id="calcResult" style="font-weight: bold; font-size: 1.1rem; color: #e67e22; margin-top: 10px;"></p>
+    </section>
+
+    <section class="card" style="background-color: #f0f8ff;">
+        <h2>事務効率化：メール定型文作成</h2>
+        <div style="margin-bottom: 10px;">
+            <label>お客様名：</label>
+            <input type="text" id="clientName" placeholder="〇〇株式会社 様" style="padding: 8px; width: 200px;">
+        </div>
+        <button class="btn" style="background: #4a90e2;" onclick="generateMail()">メール文を作成する</button>
+        
+        <div style="margin-top: 15px;">
+            <textarea id="mailBody" rows="8" style="width: 100%; padding: 10px; border-radius: 5px; border: 1px solid #ddd;" readonly></textarea>
+        </div>
+        <button class="btn" style="background: #27ae60;" onclick="copyMail()">文面をコピーする</button>
+    </section>
+</div>
+
+<footer>
+    &copy; 2026 (masumi) Lab. All Rights Reserved.
+</footer>
+
+<script>
+    // 計算の処理
+    function calculateTotal() {
+        const price = document.getElementById('unitPrice').value;
+        const qty = document.getElementById('quantity').value;
+        if (price && qty) {
+            const total = Math.floor(price * qty * 1.1); // 10%税込
+            document.getElementById('calcResult').innerText = '合計金額（税込）は ' + total.toLocaleString() + ' 円です。';
+        } else {
+            alert('単価と数量を入力してください');
+        }
+    }
+
+    // 定型文作成の処理
+    function generateMail() {
+        const name = document.getElementById('clientName').value || 'お客様';
+        const resultText = document.getElementById('calcResult').innerText || '（未計算）';
+        const body = `${name}\n\nお世話になっております、(masumi)です。\n\n先ほどのご依頼内容について、お見積り金額をご案内いたします。\n\n${resultText}\n\nご確認のほど、よろしくお願い申し上げます。`;
+        document.getElementById('mailBody').value = body;
+    }
+
+    // コピーの処理
+    function copyMail() {
+        const textarea = document.getElementById('mailBody');
+        if (!textarea.value) {
+            alert('まずはメール文を作成してください');
+            return;
+        }
+        textarea.select();
+        document.execCommand('copy');
+        alert('メール文をクリップボードにコピーしました！');
+    }
+</script>
+
+</body>
+</html>
