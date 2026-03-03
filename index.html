@@ -16,6 +16,8 @@
         footer { text-align: center; padding: 2rem; background: #f9f9f9; font-size: 0.8rem; }
         ul { list-style: none; padding: 0; display: flex; justify-content: center; gap: 20px; }
         nav ul li a { color: #333; text-decoration: none; font-weight: bold; cursor: pointer; }
+        /* エラーメッセージ用の色 */
+        .error { color: #e74c3c; font-size: 0.9rem; margin-top: 5px; display: none; }
     </style>
 </head>
 <body>
@@ -55,10 +57,17 @@
             <label>お客様名：</label>
             <input type="text" id="clientName" placeholder="〇〇株式会社 様" style="padding: 8px; width: 200px;">
         </div>
+        
+        <div style="margin-bottom: 10px;">
+            <label>電話番号：</label>
+            <input type="text" id="telInput" placeholder="ハイフンなしで入力" style="padding: 8px; width: 200px;">
+            <p id="telError" class="error">※電話番号は10桁または11桁の数字で入力してください</p>
+        </div>
+
         <button class="btn" style="background: #4a90e2;" onclick="generateMail()">メール文を作成する</button>
         
         <div style="margin-top: 15px;">
-            <textarea id="mailBody" rows="8" style="width: 100%; padding: 10px; border-radius: 5px; border: 1px solid #ddd;" readonly></textarea>
+            <textarea id="mailBody" rows="10" style="width: 100%; padding: 10px; border-radius: 5px; border: 1px solid #ddd;" readonly></textarea>
         </div>
         <button class="btn" style="background: #27ae60;" onclick="copyMail()">文面をコピーする</button>
     </section>
@@ -69,27 +78,36 @@
 </footer>
 
 <script>
-    // 計算の処理
     function calculateTotal() {
         const price = document.getElementById('unitPrice').value;
         const qty = document.getElementById('quantity').value;
         if (price && qty) {
-            const total = Math.floor(price * qty * 1.1); // 10%税込
+            const total = Math.floor(price * qty * 1.1);
             document.getElementById('calcResult').innerText = '合計金額（税込）は ' + total.toLocaleString() + ' 円です。';
         } else {
             alert('単価と数量を入力してください');
         }
     }
 
-    // 定型文作成の処理
     function generateMail() {
         const name = document.getElementById('clientName').value || 'お客様';
+        const tel = document.getElementById('telInput').value;
         const resultText = document.getElementById('calcResult').innerText || '（未計算）';
-        const body = `${name}\n\nお世話になっております、(masumi)です。\n\n先ほどのご依頼内容について、お見積り金額をご案内いたします。\n\n${resultText}\n\nご確認のほど、よろしくお願い申し上げます。`;
+        const errorMsg = document.getElementById('telError');
+        
+        // 【新機能】電話番号の桁数チェックの魔法
+        if (tel.length > 0 && (tel.length < 10 || tel.length > 11 || isNaN(tel))) {
+            errorMsg.style.display = 'block'; // エラーを表示
+            alert('電話番号に不備があります');
+            return; // 処理を中断
+        } else {
+            errorMsg.style.display = 'none'; // エラーを隠す
+        }
+
+        const body = `${name}\n\nお世話になっております、(masumi)です。\n\n先ほどのご依頼内容について、お見積り金額をご案内いたします。\n\n${resultText}\nご連絡先：${tel || '（未入力）'}\n\nご確認のほど、よろしくお願い申し上げます。`;
         document.getElementById('mailBody').value = body;
     }
 
-    // コピーの処理
     function copyMail() {
         const textarea = document.getElementById('mailBody');
         if (!textarea.value) {
