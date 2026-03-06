@@ -17,9 +17,11 @@
         ul { list-style: none; padding: 0; display: flex; justify-content: center; gap: 20px; }
         nav ul li a { color: #333; text-decoration: none; font-weight: bold; cursor: pointer; }
         .error { color: #e74c3c; font-size: 0.9rem; margin-top: 5px; display: none; }
-        
-        /* コピー成功時のボタンの見た目 */
         .copy-success { background-color: #27ae60 !important; transform: scale(1.05); }
+        
+        /* 履歴リスト用のスタイル */
+        #historyList { margin-top: 10px; padding: 0; list-style: none; }
+        #historyList li { background: #fff; border-bottom: 1px solid #eee; padding: 10px; font-size: 0.9rem; display: flex; justify-content: space-between; align-items: center; }
     </style>
 </head>
 <body onload="initializeForm()">
@@ -40,23 +42,32 @@
 
 <div class="container">
     <section class="card" style="background-color: #fff0f5;">
-        <h2>事務効率化：見積もり計算ツール</h2>
+        <h2>事務効率化：見積もり計算 & 履歴保存</h2>
+        <div style="margin-bottom: 10px;">
+            <label>項目名：</label>
+            <input type="text" id="itemName" placeholder="例: A社 備品" style="padding: 8px; width: 150px;">
+        </div>
         <div style="margin-bottom: 10px;">
             <label>単価：</label>
-            <input type="number" id="unitPrice" oninput="calculateTotal()" placeholder="例: 1000" style="padding: 8px; width: 100px;">
+            <input type="number" id="unitPrice" oninput="calculateTotal()" placeholder="1000" style="padding: 8px; width: 80px;">
+            <label> 数量：</label>
+            <input type="number" id="quantity" oninput="calculateTotal()" placeholder="5" style="padding: 8px; width: 60px;">
         </div>
-        <div style="margin-bottom: 10px;">
-            <label>数量：</label>
-            <input type="number" id="quantity" oninput="calculateTotal()" placeholder="例: 5" style="padding: 8px; width: 100px;">
-        </div>
-        <button class="btn" onclick="calculateTotal()">計算してメール更新</button>
         <p id="calcResult" style="font-weight: bold; font-size: 1.1rem; color: #e67e22; margin-top: 10px;"></p>
+        
+        <button class="btn" style="background: #34495e;" onclick="addHistory()">履歴に追加する</button>
+        
+        <div style="margin-top: 20px; border-top: 2px dashed #ffb6c1; padding-top: 10px;">
+            <p style="font-weight: bold; margin-bottom: 5px;">【計算履歴】</p>
+            <ul id="historyList"></ul>
+            <button class="btn" style="background: #95a5a6; font-size: 0.8rem;" onclick="clearHistory()">履歴を消去</button>
+        </div>
     </section>
 
     <section class="card" style="background-color: #f0f8ff;">
         <h2>事務効率化：メール定型文作成</h2>
         <div style="margin-bottom: 10px;">
-            <label>メール件名：</label>
+            <label>件名：</label>
             <select id="mailSubject" onchange="generateMail()" style="padding: 8px; width: 250px;">
                 <option value="ご案内">【お見積り】のご案内</option>
                 <option value="ご相談">【打ち合わせ】のご相談</option>
@@ -73,7 +84,7 @@
         </div>
         <div style="margin-bottom: 10px;">
             <label>電話番号：</label>
-            <input type="text" id="telInput" oninput="generateMail()" placeholder="ハイフンなし" style="padding: 8px; width: 200px;">
+            <input type="text" id="telInput" oninput="generateMail()" placeholder="09012345678" style="padding: 8px; width: 200px;">
             <p id="telError" class="error">※電話番号は10～11桁の数字で入力してください</p>
         </div>
         
@@ -84,27 +95,19 @@
     </section>
 </div>
 
-<footer>
-    &copy; 2026 (masumi) Lab. All Rights Reserved.
-</footer>
+<footer>&copy; 2026 (masumi) Lab. All Rights Reserved.</footer>
 
 <script>
     function initializeForm() {
         setTodayDate();
-        generateMail(); // 最初に空のメールを作っておく
+        generateMail();
     }
 
     function setTodayDate() {
         const now = new Date();
-        const today = now.getFullYear() + '年' + (now.getMonth() + 1) + '月' + now.getDate() + '日';
-        document.getElementById('dateInput').value = today;
+        document.getElementById('dateInput').value = now.getFullYear() + '年' + (now.getMonth() + 1) + '月' + now.getDate() + '日';
     }
 
-    function showContact() {
-        alert('お電話でのお問い合わせはこちら：0000000000');
-    }
-
-    // 計算したら、自動でメール作成も呼び出す
     function calculateTotal() {
         const price = document.getElementById('unitPrice').value;
         const qty = document.getElementById('quantity').value;
@@ -114,7 +117,31 @@
         } else {
             document.getElementById('calcResult').innerText = '';
         }
-        generateMail(); // ここで連携！
+        generateMail();
+    }
+
+    // 【新機能】履歴に追加する魔法
+    function addHistory() {
+        const itemName = document.getElementById('itemName').value || '未分類';
+        const result = document.getElementById('calcResult').innerText;
+        if (!result) { alert('まずは金額を計算してください'); return; }
+
+        const list = document.getElementById('historyList');
+        const li = document.createElement('li');
+        li.innerText = itemName + ' : ' + result;
+        list.appendChild(li);
+        
+        // 追加したら入力欄をリセット（次の入力のため）
+        document.getElementById('itemName').value = '';
+        document.getElementById('unitPrice').value = '';
+        document.getElementById('quantity').value = '';
+        document.getElementById('calcResult').innerText = '';
+    }
+
+    function clearHistory() {
+        if(confirm('履歴をすべて消去しますか？')) {
+            document.getElementById('historyList').innerHTML = '';
+        }
     }
 
     function generateMail() {
@@ -123,14 +150,7 @@
         const tel = document.getElementById('telInput').value;
         const dateStr = document.getElementById('dateInput').value;
         const resultText = document.getElementById('calcResult').innerText || '（金額未入力）';
-        const errorMsg = document.getElementById('telError');
         
-        if (tel.length > 0 && (tel.length < 10 || tel.length > 11 || isNaN(tel))) {
-            errorMsg.style.display = 'block';
-        } else {
-            errorMsg.style.display = 'none';
-        }
-
         let opening = 'お世話になっております、(masumi)です。';
         if (subject === 'ご案内') opening += '\n先ほどのご依頼内容について、お見積り金額をご案内いたします。';
         else if (subject === 'ご相談') opening += '\n次回の打ち合わせ日時について、ご相談したくご連絡いたしました。';
@@ -140,25 +160,21 @@
         document.getElementById('mailBody').value = body;
     }
 
-    // コピー機能：アラートなしでボタンを変化させる
     function copyMail() {
         const textarea = document.getElementById('mailBody');
         const btn = document.getElementById('copyBtn');
-        
         textarea.select();
         document.execCommand('copy');
-
-        // ボタンの文字と色を変える演出
         const originalText = btn.innerText;
         btn.innerText = '✅ コピー完了！';
         btn.classList.add('copy-success');
-
-        // 2秒後に元に戻す
         setTimeout(() => {
             btn.innerText = originalText;
             btn.classList.remove('copy-success');
         }, 2000);
     }
+
+    function showContact() { alert('お電話はこちら：0000000000'); }
 </script>
 
 </body>
