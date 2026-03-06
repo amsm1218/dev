@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>(masumi) のポートフォリオ</title>
+    <meta name="description" content="事務職の経験を活かし、AIで業務効率化を目指す(masumi)のポートフォリオサイトです。">
+    <style>
+        body { font-family: 'Helvetica Neue', Arial, sans-serif; line-height: 1.6; margin: 0; color: #333; }
+        header { background: #4a90e2; color: #fff; padding: 2rem; text-align: center; }
+        nav { background: #ecf0f1; padding: 0.5rem; text-align: center; position: sticky; top: 0; }
+        .container { max-width: 800px; margin: auto; padding: 2rem; }
+        .card { border: 1px solid #ddd; padding: 1.5rem; border-radius: 8px; margin-bottom: 1rem; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        h1 { margin: 0; font-size: 2.5rem; }
+        .btn { background: #e67e22; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block; margin-top: 10px; border: none; cursor: pointer; transition: 0.3s; }
+        footer { text-align: center; padding: 2rem; background: #f9f9f9; font-size: 0.8rem; }
+        ul { list-style: none; padding: 0; display: flex; justify-content: center; gap: 20px; }
+        nav ul li a { color: #333; text-decoration: none; font-weight: bold; cursor: pointer; }
+        .error { color: #e74c3c; font-size: 0.9rem; margin-top: 5px; display: none; }
+        
+        /* コピー成功時のボタンの見た目 */
+        .copy-success { background-color: #27ae60 !important; transform: scale(1.05); }
+    </style>
+</head>
+<body onload="initializeForm()">
+
+<header>
+    <h1>(masumi) & Business Innovation</h1>
+    <p>事務職からAIエンジニアへの挑戦。新しい価値を、ここから。</p>
+</header>
+
+<nav>
+    <ul>
+        <li>ホーム</li>
+        <li><a href="https://www.google.com">事業内容</a></li>
+        <li>実績</li>
+        <li><a onclick="showContact()">お問い合わせ</a></li>
+    </ul>
+</nav>
+
+<div class="container">
+    <section class="card" style="background-color: #fff0f5;">
+        <h2>事務効率化：見積もり計算ツール</h2>
+        <div style="margin-bottom: 10px;">
+            <label>単価：</label>
+            <input type="number" id="unitPrice" oninput="calculateTotal()" placeholder="例: 1000" style="padding: 8px; width: 100px;">
+        </div>
+        <div style="margin-bottom: 10px;">
+            <label>数量：</label>
+            <input type="number" id="quantity" oninput="calculateTotal()" placeholder="例: 5" style="padding: 8px; width: 100px;">
+        </div>
+        <button class="btn" onclick="calculateTotal()">計算してメール更新</button>
+        <p id="calcResult" style="font-weight: bold; font-size: 1.1rem; color: #e67e22; margin-top: 10px;"></p>
+    </section>
+
+    <section class="card" style="background-color: #f0f8ff;">
+        <h2>事務効率化：メール定型文作成</h2>
+        <div style="margin-bottom: 10px;">
+            <label>メール件名：</label>
+            <select id="mailSubject" onchange="generateMail()" style="padding: 8px; width: 250px;">
+                <option value="ご案内">【お見積り】のご案内</option>
+                <option value="ご相談">【打ち合わせ】のご相談</option>
+                <option value="お知らせ">【資料送付】のお知らせ</option>
+            </select>
+        </div>
+        <div style="margin-bottom: 10px;">
+            <label>送信日：</label>
+            <input type="text" id="dateInput" style="padding: 8px; width: 200px;">
+        </div>
+        <div style="margin-bottom: 10px;">
+            <label>お客様名：</label>
+            <input type="text" id="clientName" oninput="generateMail()" placeholder="〇〇株式会社 様" style="padding: 8px; width: 200px;">
+        </div>
+        <div style="margin-bottom: 10px;">
+            <label>電話番号：</label>
+            <input type="text" id="telInput" oninput="generateMail()" placeholder="ハイフンなし" style="padding: 8px; width: 200px;">
+            <p id="telError" class="error">※電話番号は10～11桁の数字で入力してください</p>
+        </div>
+        
+        <div style="margin-top: 15px;">
+            <textarea id="mailBody" rows="14" style="width: 100%; padding: 10px; border-radius: 5px; border: 1px solid #ddd;" readonly></textarea>
+        </div>
+        <button class="btn" id="copyBtn" style="background: #27ae60;" onclick="copyMail()">文面をコピーする</button>
+    </section>
+</div>
+
+<footer>
+    &copy; 2026 (masumi) Lab. All Rights Reserved.
+</footer>
+
+<script>
+    function initializeForm() {
+        setTodayDate();
+        generateMail(); // 最初に空のメールを作っておく
+    }
+
+    function setTodayDate() {
+        const now = new Date();
+        const today = now.getFullYear() + '年' + (now.getMonth() + 1) + '月' + now.getDate() + '日';
+        document.getElementById('dateInput').value = today;
+    }
+
+    function showContact() {
+        alert('お電話でのお問い合わせはこちら：0000000000');
+    }
+
+    // 計算したら、自動でメール作成も呼び出す
+    function calculateTotal() {
+        const price = document.getElementById('unitPrice').value;
+        const qty = document.getElementById('quantity').value;
+        if (price && qty) {
+            const total = Math.floor(price * qty * 1.1);
+            document.getElementById('calcResult').innerText = '合計金額（税込）は ' + total.toLocaleString() + ' 円です。';
+        } else {
+            document.getElementById('calcResult').innerText = '';
+        }
+        generateMail(); // ここで連携！
+    }
+
+    function generateMail() {
+        const subject = document.getElementById('mailSubject').value;
+        const name = document.getElementById('clientName').value || 'お客様';
+        const tel = document.getElementById('telInput').value;
+        const dateStr = document.getElementById('dateInput').value;
+        const resultText = document.getElementById('calcResult').innerText || '（金額未入力）';
+        const errorMsg = document.getElementById('telError');
+        
+        if (tel.length > 0 && (tel.length < 10 || tel.length > 11 || isNaN(tel))) {
+            errorMsg.style.display = 'block';
+        } else {
+            errorMsg.style.display = 'none';
+        }
+
+        let opening = 'お世話になっております、(masumi)です。';
+        if (subject === 'ご案内') opening += '\n先ほどのご依頼内容について、お見積り金額をご案内いたします。';
+        else if (subject === 'ご相談') opening += '\n次回の打ち合わせ日時について、ご相談したくご連絡いたしました。';
+        else if (subject === 'お知らせ') opening += '\nご請求いただいておりました資料をお送りいたします。';
+
+        const body = `送信日：${dateStr}\n件名：${document.getElementById('mailSubject').selectedOptions[0].text}\n${name}\n\n${opening}\n\n${subject === 'ご案内' ? resultText + '\n' : ''}ご連絡先：${tel || '（未入力）'}\n\nご確認のほど、よろしくお願い申し上げます。`;
+        document.getElementById('mailBody').value = body;
+    }
+
+    // コピー機能：アラートなしでボタンを変化させる
+    function copyMail() {
+        const textarea = document.getElementById('mailBody');
+        const btn = document.getElementById('copyBtn');
+        
+        textarea.select();
+        document.execCommand('copy');
+
+        // ボタンの文字と色を変える演出
+        const originalText = btn.innerText;
+        btn.innerText = '✅ コピー完了！';
+        btn.classList.add('copy-success');
+
+        // 2秒後に元に戻す
+        setTimeout(() => {
+            btn.innerText = originalText;
+            btn.classList.remove('copy-success');
+        }, 2000);
+    }
+</script>
+
+</body>
+</html>
