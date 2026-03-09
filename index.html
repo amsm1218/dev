@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Masumi のポートフォリオ</title>
+    <meta name="description" content="事務職の経験を活かし、AIで業務効率化を目指すMasumiのポートフォリオサイトです。">
+    <style>
+        /* 全体のデザイン設定 */
+        body { font-family: 'Helvetica Neue', Arial, sans-serif; line-height: 1.6; margin: 0; color: #333; background-color: #f4f7f6; }
+        header { background: #4a90e2; color: #fff; padding: 3rem 2rem; text-align: center; }
+        nav { background: #fff; padding: 1rem; text-align: center; position: sticky; top: 0; box-shadow: 0 2px 5px rgba(0,0,0,0.1); z-index: 100; }
+        .container { max-width: 900px; margin: auto; padding: 2rem; }
+        .card { background: #fff; padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: none; }
+        h1 { margin: 0; font-size: 2.8rem; letter-spacing: 1px; }
+        h2 { color: #4a90e2; border-bottom: 2px solid #f0f8ff; padding-bottom: 10px; }
+        
+        /* ボタンのデザイン */
+        .btn { background: #e67e22; color: white; padding: 12px 24px; text-decoration: none; border-radius: 30px; display: inline-block; border: none; cursor: pointer; transition: 0.3s; font-weight: bold; }
+        .btn:hover { background: #d35400; transform: translateY(-2px); }
+        
+        /* AIデモエリア（自然言語処理のシミュレーション） */
+        .ai-chat-box { background: #f9f9f9; border-radius: 8px; padding: 15px; height: 200px; overflow-y: auto; border: 1px solid #eee; margin-bottom: 10px; }
+        .message { margin-bottom: 10px; padding: 8px 12px; border-radius: 15px; max-width: 80%; }
+        .user-msg { background: #4a90e2; color: white; margin-left: auto; text-align: right; }
+        .ai-msg { background: #e0e0e0; color: #333; }
+
+        footer { text-align: center; padding: 3rem; background: #333; color: #fff; font-size: 0.9rem; }
+        nav ul { list-style: none; padding: 0; display: flex; justify-content: center; gap: 30px; margin: 0; }
+        nav ul li a { color: #333; text-decoration: none; font-weight: bold; }
+        .error { color: #e74c3c; font-size: 0.8rem; margin-top: 5px; display: none; }
+        .copy-success { background-color: #27ae60 !important; }
+    </style>
+</head>
+<body onload="initializeForm()">
+
+<header>
+    <h1>Masumi & Business Innovation</h1>
+    <p>事務職の経験 × AI技術。現場を支える、一歩先の効率化。</p>
+</header>
+
+<nav>
+    <ul>
+        <li>ホーム</li>
+        <li>実績</li>
+        <li><a href="#" onclick="alert('準備中です！')">お問い合わせ</a></li>
+    </ul>
+</nav>
+
+<div class="container">
+    
+    <section class="card">
+        <h2>AIデモ：事務補助AIアシスタント</h2>
+        <p><small>※自然言語処理を活用し、入力された言葉から意図を読み取るシミュレーションです。</small></p>
+        <div class="ai-chat-box" id="chatBox">
+            <div class="message ai-msg">こんにちは！Masumiが作成したAIです。何かお困りですか？<br>（例：「計算して」「メールを作って」と打ってみてください）</div>
+        </div>
+        <div style="display: flex; gap: 10px;">
+            <input type="text" id="aiInput" placeholder="AIに指示を出す..." style="flex: 1; padding: 10px; border-radius: 5px; border: 1px solid #ddd;">
+            <button class="btn" onclick="askAI()">送信</button>
+        </div>
+    </section>
+
+    <section class="card" style="border-left: 5px solid #e67e22;">
+        <h2>事務効率化：見積もり計算ツール</h2>
+        <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+            <div><label>単価：</label><input type="number" id="unitPrice" oninput="calculateTotal()" style="padding: 8px;"></div>
+            <div><label>数量：</label><input type="number" id="quantity" oninput="calculateTotal()" style="padding: 8px;"></div>
+        </div>
+        <p id="calcResult" style="font-weight: bold; color: #e67e22; margin-top: 15px;"></p>
+    </section>
+
+    <section class="card" style="border-left: 5px solid #4a90e2;">
+        <h2>事務効率化：メール定型文作成</h2>
+        <div style="margin-bottom: 10px;">
+            <label>お客様名：</label>
+            <input type="text" id="clientName" oninput="generateMail()" placeholder="〇〇株式会社 様" style="padding: 8px; width: 100%;">
+        </div>
+        <textarea id="mailBody" rows="10" style="width: 100%; padding: 10px; border-radius: 5px; border: 1px solid #ddd; font-size: 0.9rem;" readonly></textarea>
+        <button class="btn" id="copyBtn" style="background: #27ae60; margin-top: 10px;" onclick="copyMail()">文面をコピー</button>
+    </section>
+</div>
+
+<footer>
+    &copy; 2026 Masumi Lab. All Rights Reserved.
+</footer>
+
+<script>
+    function initializeForm() {
+        generateMail();
+    }
+
+    // AIチャットデモのロジック
+    function askAI() {
+        const input = document.getElementById('aiInput');
+        const chatBox = document.getElementById('chatBox');
+        if (!input.value) return;
+
+        // ユーザーのメッセージを表示
+        chatBox.innerHTML += `<div class="message user-msg">${input.value}</div>`;
+        
+        const val = input.value;
+        let response = "申し訳ありません、その指示にはまだ対応していません。";
+
+        // 簡易的な自然言語処理（キーワード反応）
+        if (val.includes("計算")) response = "上の「見積もり計算ツール」を使って計算が可能です！";
+        else if (val.includes("メール")) response = "下の「メール定型文作成」で素早く文章を作れますよ。";
+        else if (val.includes("こんにちは")) response = "こんにちは！今日も事務作業を効率化しましょう！";
+
+        // AIの返答を表示
+        setTimeout(() => {
+            chatBox.innerHTML += `<div class="message ai-msg">${response}</div>`;
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }, 500);
+
+        input.value = "";
+    }
+
+    // 計算ロジック
+    function calculateTotal() {
+        const price = document.getElementById('unitPrice').value;
+        const qty = document.getElementById('quantity').value;
+        const res = document.getElementById('calcResult');
+        if (price && qty) {
+            const total = Math.floor(price * qty * 1.1);
+            res.innerText = '合計（税込）: ' + total.toLocaleString() + ' 円';
+        }
+        generateMail();
+    }
+
+    function generateMail() {
+        const name = document.getElementById('clientName').value || 'お客様';
+        const priceText = document.getElementById('calcResult').innerText || '（未入力）';
+        document.getElementById('mailBody').value = `${name}\n\nお世話になっております、Masumiです。\nお見積り金額をご案内します。\n\n${priceText}\n\nご確認お願いします。`;
+    }
+
+    function copyMail() {
+        const textarea = document.getElementById('mailBody');
+        navigator.clipboard.writeText(textarea.value);
+        const btn = document.getElementById('copyBtn');
+        btn.innerText = '✅ コピー完了！';
+        btn.classList.add('copy-success');
+        setTimeout(() => {
+            btn.innerText = '文面をコピー';
+            btn.classList.remove('copy-success');
+        }, 2000);
+    }
+</script>
+
+</body>
+</html>
