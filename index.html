@@ -6,58 +6,69 @@
     <title>Masumi のポートフォリオ</title>
     <meta name="description" content="事務職の経験を活かし、AIで業務効率化を目指すMasumiのポートフォリオサイトです。">
     <style>
-        /* 全体のデザイン設定 */
         body { font-family: 'Helvetica Neue', Arial, sans-serif; line-height: 1.6; margin: 0; color: #333; background-color: #f4f7f6; }
         header { background: #4a90e2; color: #fff; padding: 3rem 2rem; text-align: center; }
         nav { background: #fff; padding: 1rem; text-align: center; position: sticky; top: 0; box-shadow: 0 2px 5px rgba(0,0,0,0.1); z-index: 100; }
         .container { max-width: 900px; margin: auto; padding: 2rem; }
-        .card { background: #fff; padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: none; }
+        .card { background: #fff; padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
         h1 { margin: 0; font-size: 2.8rem; letter-spacing: 1px; }
         h2 { color: #4a90e2; border-bottom: 2px solid #f0f8ff; padding-bottom: 10px; }
-        
-        /* ボタンのデザイン */
         .btn { background: #e67e22; color: white; padding: 12px 24px; text-decoration: none; border-radius: 30px; display: inline-block; border: none; cursor: pointer; transition: 0.3s; font-weight: bold; }
         .btn:hover { background: #d35400; transform: translateY(-2px); }
         
-        /* AIデモエリア（自然言語処理のシミュレーション） */
-        .ai-chat-box { background: #f9f9f9; border-radius: 8px; padding: 15px; height: 200px; overflow-y: auto; border: 1px solid #eee; margin-bottom: 10px; }
-        .message { margin-bottom: 10px; padding: 8px 12px; border-radius: 15px; max-width: 80%; }
+        /* チャットのデザイン */
+        .ai-chat-box { background: #f9f9f9; border-radius: 8px; padding: 15px; height: 180px; overflow-y: auto; border: 1px solid #eee; margin-bottom: 10px; }
+        .message { margin-bottom: 10px; padding: 8px 12px; border-radius: 15px; max-width: 80%; font-size: 0.9rem; }
         .user-msg { background: #4a90e2; color: white; margin-left: auto; text-align: right; }
         .ai-msg { background: #e0e0e0; color: #333; }
+        
+        /* 画像デモのデザイン */
+        #imagePreview { max-width: 100%; height: auto; margin-top: 10px; border-radius: 8px; display: none; border: 2px dashed #ddd; }
+        .analysis-result { background: #fffde7; padding: 15px; border-radius: 8px; margin-top: 10px; border-left: 5px solid #fbc02d; display: none; }
 
-        footer { text-align: center; padding: 3rem; background: #333; color: #fff; font-size: 0.9rem; }
+        footer { text-align: center; padding: 3rem; background: #333; color: #fff; font-size: 0.8rem; }
         nav ul { list-style: none; padding: 0; display: flex; justify-content: center; gap: 30px; margin: 0; }
         nav ul li a { color: #333; text-decoration: none; font-weight: bold; }
-        .error { color: #e74c3c; font-size: 0.8rem; margin-top: 5px; display: none; }
-        .copy-success { background-color: #27ae60 !important; }
     </style>
 </head>
 <body onload="initializeForm()">
 
 <header>
     <h1>Masumi & Business Innovation</h1>
-    <p>事務職の経験 × AI技術。現場を支える、一歩先の効率化。</p>
+    <p>事務職の経験 × AI技術。現場の「困った」を解決するパートナーへ。</p>
 </header>
 
 <nav>
     <ul>
         <li>ホーム</li>
-        <li>実績</li>
-        <li><a href="#" onclick="alert('準備中です！')">お問い合わせ</a></li>
+        <li>AIデモ紹介</li>
+        <li><a href="#" onclick="alert('000-0000-0000 までお問い合わせください')">お問い合わせ</a></li>
     </ul>
 </nav>
 
 <div class="container">
-    
+
     <section class="card">
-        <h2>AIデモ：事務補助AIアシスタント</h2>
-        <p><small>※自然言語処理を活用し、入力された言葉から意図を読み取るシミュレーションです。</small></p>
+        <h2>AIデモ①：自然言語による指示</h2>
+        <p>「お疲れ様」や「メールを作って」と話しかけてみてください。</p>
         <div class="ai-chat-box" id="chatBox">
-            <div class="message ai-msg">こんにちは！Masumiが作成したAIです。何かお困りですか？<br>（例：「計算して」「メールを作って」と打ってみてください）</div>
+            <div class="message ai-msg">こんにちは！Masumi AIです。今日はどのようなお手伝いをしましょうか？</div>
         </div>
         <div style="display: flex; gap: 10px;">
-            <input type="text" id="aiInput" placeholder="AIに指示を出す..." style="flex: 1; padding: 10px; border-radius: 5px; border: 1px solid #ddd;">
+            <input type="text" id="aiInput" placeholder="メッセージを入力..." style="flex: 1; padding: 10px; border-radius: 5px; border: 1px solid #ddd;">
             <button class="btn" onclick="askAI()">送信</button>
+        </div>
+    </section>
+
+    <section class="card">
+        <h2>AIデモ②：画像内容の解析シミュレーション</h2>
+        <p>事務作業で役立つ「画像認識」のデモです。写真を選択するとAIが内容を分析します。</p>
+        <input type="file" id="imageInput" accept="image/*" onchange="analyzeImage()" style="margin-bottom: 10px;">
+        <br>
+        <img id="imagePreview">
+        <div id="analysisResult" class="analysis-result">
+            <strong>【AI解析結果】</strong><br>
+            <span id="analysisText">解析中...</span>
         </div>
     </section>
 
@@ -69,16 +80,6 @@
         </div>
         <p id="calcResult" style="font-weight: bold; color: #e67e22; margin-top: 15px;"></p>
     </section>
-
-    <section class="card" style="border-left: 5px solid #4a90e2;">
-        <h2>事務効率化：メール定型文作成</h2>
-        <div style="margin-bottom: 10px;">
-            <label>お客様名：</label>
-            <input type="text" id="clientName" oninput="generateMail()" placeholder="〇〇株式会社 様" style="padding: 8px; width: 100%;">
-        </div>
-        <textarea id="mailBody" rows="10" style="width: 100%; padding: 10px; border-radius: 5px; border: 1px solid #ddd; font-size: 0.9rem;" readonly></textarea>
-        <button class="btn" id="copyBtn" style="background: #27ae60; margin-top: 10px;" onclick="copyMail()">文面をコピー</button>
-    </section>
 </div>
 
 <footer>
@@ -87,63 +88,71 @@
 
 <script>
     function initializeForm() {
-        generateMail();
+        // 初期設定が必要な場合にここに書く
     }
 
-    // AIチャットデモのロジック
+    // AIチャットのロジック
     function askAI() {
         const input = document.getElementById('aiInput');
         const chatBox = document.getElementById('chatBox');
         if (!input.value) return;
 
-        // ユーザーのメッセージを表示
         chatBox.innerHTML += `<div class="message user-msg">${input.value}</div>`;
-        
         const val = input.value;
-        let response = "申し訳ありません、その指示にはまだ対応していません。";
+        let response = "その指示を学習すれば、もっと業務が楽になりそうですね！";
 
-        // 簡易的な自然言語処理（キーワード反応）
-        if (val.includes("計算")) response = "上の「見積もり計算ツール」を使って計算が可能です！";
-        else if (val.includes("メール")) response = "下の「メール定型文作成」で素早く文章を作れますよ。";
-        else if (val.includes("こんにちは")) response = "こんにちは！今日も事務作業を効率化しましょう！";
+        if (val.includes("計算")) response = "計算なら上のツールにお任せください！";
+        else if (val.includes("メール")) response = "メール作成、承りました。下にひな形を用意しました。";
+        else if (val.includes("こんにちは")) response = "こんにちは！今日も元気に頑張りましょう。";
+        else if (val.includes("お疲れ様")) response = "お疲れ様です！根を詰めすぎないようにしてくださいね。";
 
-        // AIの返答を表示
         setTimeout(() => {
             chatBox.innerHTML += `<div class="message ai-msg">${response}</div>`;
             chatBox.scrollTop = chatBox.scrollHeight;
-        }, 500);
-
+        }, 600);
         input.value = "";
     }
 
-    // 計算ロジック
+    // 画像解析のロジック
+    function analyzeImage() {
+        const input = document.getElementById('imageInput');
+        const preview = document.getElementById('imagePreview');
+        const resultDiv = document.getElementById('analysisResult');
+        const resultText = document.getElementById('analysisText');
+
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                preview.src = e.target.result;
+                preview.style.display = 'block';
+                resultDiv.style.display = 'block';
+                resultText.innerText = "画像をスキャンしています...";
+
+                // AIが解析しているような演出（2秒待つ）
+                setTimeout(() => {
+                    const fileName = input.files[0].name.toLowerCase();
+                    let aiComment = "画像の中に、事務書類または風景を確認しました。テキストデータ化が可能です。";
+                    
+                    if (fileName.includes("receipt") || fileName.includes("領収書")) {
+                        aiComment = "領収書を検知しました。金額と日付を自動抽出して帳簿に記載しますか？";
+                    } else if (fileName.includes("face") || fileName.includes("顔")) {
+                        aiComment = "人物の顔を検知しました。セキュリティチェックを完了しました。";
+                    }
+
+                    resultText.innerText = aiComment;
+                }, 2000);
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
     function calculateTotal() {
         const price = document.getElementById('unitPrice').value;
         const qty = document.getElementById('quantity').value;
-        const res = document.getElementById('calcResult');
         if (price && qty) {
             const total = Math.floor(price * qty * 1.1);
-            res.innerText = '合計（税込）: ' + total.toLocaleString() + ' 円';
+            document.getElementById('calcResult').innerText = '合計（税込）: ' + total.toLocaleString() + ' 円';
         }
-        generateMail();
-    }
-
-    function generateMail() {
-        const name = document.getElementById('clientName').value || 'お客様';
-        const priceText = document.getElementById('calcResult').innerText || '（未入力）';
-        document.getElementById('mailBody').value = `${name}\n\nお世話になっております、Masumiです。\nお見積り金額をご案内します。\n\n${priceText}\n\nご確認お願いします。`;
-    }
-
-    function copyMail() {
-        const textarea = document.getElementById('mailBody');
-        navigator.clipboard.writeText(textarea.value);
-        const btn = document.getElementById('copyBtn');
-        btn.innerText = '✅ コピー完了！';
-        btn.classList.add('copy-success');
-        setTimeout(() => {
-            btn.innerText = '文面をコピー';
-            btn.classList.remove('copy-success');
-        }, 2000);
     }
 </script>
 
